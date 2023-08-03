@@ -1,6 +1,7 @@
 # Provided by a Pipeline Secret 'ARM_SUBSCRIPTION_ID'
 variable subscription_id {
-  type = string
+  type        = string
+  description = "Azure Subscription ID"
 }
 # Provided by a Pipeline Secret 'ARM_TENANT_ID'
 variable tenant_id {
