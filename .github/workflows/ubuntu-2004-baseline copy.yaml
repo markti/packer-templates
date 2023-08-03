@@ -1,18 +1,15 @@
-name: Packer
+name: Ubuntu 20.04 Baseline
 
 on:
   pull_request:
     paths: 
       - 'ubuntu/20.04/baseline/**'
 
+env:
+  WORKING_DIRECTORY: "ubuntu/20.04/baseline"
+
 jobs:
   build:
-    strategy:
-      matrix:
-        folder: [
-          'ubuntu/20.04/baseline'
-        ]
-
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -47,7 +44,7 @@ jobs:
         PKR_VAR_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
         PKR_VAR_image_version: ${{ steps.date.outputs.year }}.${{ steps.date.outputs.month }}.${{ env.runid }}
         PKR_VAR_agent_ipaddress: ${{ env.ipaddress }}
-      working-directory: ./ubuntu/20.04/baseline
+      working-directory: ${{ env.WORKING_DIRECTORY }}
       run: |
         echo 'Run ID: '$PKR_VAR_image_version
         echo 'Agent IP Address: '$PKR_VAR_agent_ipaddress
