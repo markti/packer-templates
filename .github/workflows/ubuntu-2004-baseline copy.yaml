@@ -1,4 +1,4 @@
-name: Packer
+name: Ubuntu 20.04 Baseline
 
 on:
   pull_request:

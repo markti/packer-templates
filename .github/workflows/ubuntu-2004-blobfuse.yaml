@@ -1,4 +1,4 @@
-name: Packer
+name: Ubuntu 20.04 Blobfuse
 
 on:
   pull_request:
