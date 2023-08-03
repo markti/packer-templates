@@ -3,7 +3,7 @@ name: Packer
 on:
   pull_request:
     paths: 
-      - 'ubuntu/20.04/baseline'
+      - 'ubuntu/20.04/baseline/**'
 
 jobs:
   build:
