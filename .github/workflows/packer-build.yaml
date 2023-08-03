@@ -2,13 +2,21 @@ name: Packer
 
 on:
   pull_request:
+    paths: 
+      - 'ubuntu/20.04/baseline'
 
 jobs:
   build:
+    strategy:
+      matrix:
+        folder: [
+          'ubuntu/20.04/baseline'
+        ]
+
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Packer
+    - name: Install Packer
       run: |
         wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
         echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
@@ -24,7 +32,7 @@ jobs:
       run: |
         echo "ipaddress=$(curl -s http://ipinfo.io/ip)" >> $GITHUB_ENV
 
-    - name: Run Packer
+    - name: Build Virtual Machine Image
       env: 
         PKR_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
         PKR_VAR_tenant_id: ${{ secrets.ARM_TENANT_ID }}
