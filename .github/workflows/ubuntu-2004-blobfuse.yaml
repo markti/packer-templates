@@ -48,5 +48,6 @@ jobs:
       run: |
         echo 'Run ID: '$PKR_VAR_image_version
         echo 'Agent IP Address: '$PKR_VAR_agent_ipaddress
+        pwd
         packer init ./
         packer build -var-file="default.pkrvars.hcl" ./
