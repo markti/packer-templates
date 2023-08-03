@@ -49,3 +49,11 @@ variable vm_size {
 variable replication_regions {
   type = list(string)
 }
+# Provided by the PKRVAR file
+variable blobfuse_config_path {
+  type = string
+}
+# Provided by the PKRVAR file
+variable blobfuse_mount_dir {
+  type = string
+}
