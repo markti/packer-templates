@@ -1,0 +1,39 @@
+name: Packer Build
+
+on:
+  pull_request:
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.PAT_TOKEN }}
+        ref: ${{ github.event.pull_request.head.ref }}
+    - name: Set up Packer
+      run: |
+        wget https://releases.hashicorp.com/packer/1.7.4/packer_1.7.4_linux_amd64.zip
+        unzip packer_1.7.4_linux_amd64.zip
+        sudo mv packer /usr/local/bin/
+
+    - name: Set unique number as an environment variable
+      id: get_runid
+      run: |
+        echo "runid=${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+
+    - name: Get Agent IP Address
+      id: get_ip
+      run: |
+        echo "ipaddress=$(curl -s http://ipinfo.io/ip)" >> $GITHUB_ENV
+
+    - name: Run Packer
+      env: 
+        PKR_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+        PKR_VAR_tenant_id: ${{ secrets.ARM_TENANT_ID }}
+        PKR_VAR_client_id: ${{ secrets.ARM_CLIENT_ID }}
+        PKR_VAR_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
+        PKR_VAR_image_version: ${{ steps.get_runid.outputs.runid }}
+        PKR_VAR_agent_ipaddress: ${{ steps.get_ip.outputs.ipaddress }}
+      run: |
+        bash ./scripts/packer-build.sh
