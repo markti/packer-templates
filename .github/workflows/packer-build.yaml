@@ -4,13 +4,15 @@ on:
   pull_request:
     paths: 
       - 'ubuntu/20.04/baseline/**'
+      - 'ubuntu/20.04/blobfuse/**'
 
 jobs:
   build:
     strategy:
       matrix:
         folder: [
-          'ubuntu/20.04/baseline'
+          'ubuntu/20.04/baseline',
+          'ubuntu/20.04/blobfuse'
         ]
 
     runs-on: ubuntu-latest
