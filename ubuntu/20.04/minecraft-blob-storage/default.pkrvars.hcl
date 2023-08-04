@@ -1,5 +1,5 @@
 location               = "westus"
-image_name             = "ubuntu2004-baseline"
+image_name             = "minecraft-bedrock-blobfuse"
 vm_size                = "Standard_D4s_v5"
 gallery_resource_group = "rg-aztf-machine-images-dev"
 gallery_name           = "galaztfmachineimagesdev"
