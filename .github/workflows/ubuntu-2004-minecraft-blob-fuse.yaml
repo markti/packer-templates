@@ -1,0 +1,52 @@
+name: Ubuntu 20.04 Minecraft Blob Storage
+
+on:
+  pull_request:
+    paths: 
+      - 'ubuntu/20.04/minecraft-blob-storage/**'
+
+env:
+  WORKING_DIRECTORY: "ubuntu/20.04/minecraft-blob-storage"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Get Timestamp
+      id: date
+      run: |
+        echo "::set-output name=year::$(date +'%Y')"
+        echo "::set-output name=month::$(date +'%-m')"
+    
+    - name: Install Packer
+      run: |
+        wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+        echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+        sudo apt update && sudo apt install packer
+
+    - name: Set unique number as an environment variable
+      id: get_runid
+      run: |
+        echo "runid=${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+
+    - name: Get Agent IP Address
+      id: get_ip
+      run: |
+        echo "ipaddress=$(curl -s http://ipinfo.io/ip)" >> $GITHUB_ENV
+
+    - name: Build Virtual Machine Image
+      env: 
+        PKR_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+        PKR_VAR_tenant_id: ${{ secrets.ARM_TENANT_ID }}
+        PKR_VAR_client_id: ${{ secrets.ARM_CLIENT_ID }}
+        PKR_VAR_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
+        PKR_VAR_image_version: ${{ steps.date.outputs.year }}.${{ steps.date.outputs.month }}.${{ env.runid }}
+        PKR_VAR_agent_ipaddress: ${{ env.ipaddress }}
+      working-directory: ${{ env.WORKING_DIRECTORY }}
+      run: |
+        echo 'Run ID: '$PKR_VAR_image_version
+        echo 'Agent IP Address: '$PKR_VAR_agent_ipaddress
+        packer init ./
+        packer build -var-file="default.pkrvars.hcl" ./
