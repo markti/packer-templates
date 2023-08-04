@@ -1,4 +1,4 @@
-name: Ubuntu 20.04 Baseline
+name: Ubuntu 20.04 Minecraft Local Storage
 
 on:
   pull_request:
